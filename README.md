@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mythic Ledger 💎
 
-## Getting Started
+Mythic Ledger is a comprehensive, full-stack management and accounting system specifically built for processing Mobile Legends: Bang Bang (MLBB) Diamond orders. 
 
-First, run the development server:
+It provides seamless tracking of customers, order histories, and profit margins, designed with a premium, responsive UI for both mobile and desktop management.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![Mythic Ledger Overview](https://img.shields.io/badge/Status-Active-brightgreen.svg)
+![Next.js](https://img.shields.io/badge/Next.js-15+-black?logo=next.js)
+![Prisma](https://img.shields.io/badge/Prisma-ORM-blue?logo=prisma)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌟 Key Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Role-Based Access Control (RBAC):**
+  - **Super Admins:** Manage the entire system, create shop administrators, and view global order activity.
+  - **Shop Admins:** Restricted to managing their own customers and processing their own orders. Secure, isolated instances.
+- **Customer Management:** Keep track of player In-Game IDs and Zone IDs seamlessly.
+- **Order Tracking:** Create granular records of buying price, selling price, and automatically calculate net profit for every diamond recharge.
+- **Financial Reporting:** View automated monthly revenue and net profit aggregated reports natively inside your dashboard.
+- **Beautiful Modern UI:** Built with standard shadcn/ui components, dynamic React loading skeletons, smooth animations, and comprehensive dark mode support.
+- **Security:** Fully hashed passwords with bcrypt and secure session handling using Auth.js. Enforced password resets for newly created admins.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠 Tech Stack
 
-## Learn More
+- **Framework:** Next.js (App Router) / React
+- **Authentication:** Auth.js (NextAuth.js v5)
+- **Database:** PostgreSQL (Neon Serverless)
+- **ORM:** Prisma
+- **Styling:** Tailwind CSS + custom glass-morphism aesthetic
+- **UI Components:** shadcn/ui (Radix Base UI primitives)
+- **CI/CD:** Automated GitHub Actions workflows for continuous integration.
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Getting Started
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Prerequisites
+- Node.js (v20+)
+- A PostgreSQL Database (Tested flawlessly on [Neon.tech](https://neon.tech/))
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Installation
 
-## Deploy on Vercel
+1. Clone the repository
+   ```bash
+   git clone https://github.com/AungZawMyo97/mythic_ledger.git
+   cd mythic_ledger
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Install modules
+   ```bash
+   npm install
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Configure Environment Variables
+   Create a `.env` file in the root based on your database credentials:
+   ```env
+   DATABASE_URL="postgresql://user:password@host/neondb?sslmode=require"
+   AUTH_SECRET="generate-a-random-32-char-string-here"
+   SEED_SUPER_ADMIN_EMAIL="admin@example.com"
+   SEED_SUPER_ADMIN_PASSWORD="SecurePassword123!"
+   DEFAULT_SHOP_ADMIN_PASSWORD="TempPassword123!"
+   ```
+
+4. Push the Database Schema
+   ```bash
+   npm run db:push
+   ```
+
+5. Seed the Super Admin Account
+   ```bash
+   npm run db:seed
+   ```
+
+6. Run the Development Server
+   ```bash
+   npm run dev
+   ```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result and log in using the credentials you defined in your `.env` file.
+
+## 📦 Deployment (Vercel)
+
+1. Import this repository to [Vercel](https://vercel.com/new).
+2. Load your environment variables in the Project Settings.
+3. Override the **Build Command** to: `npx prisma db push && next build`.
+4. Click Deploy. Vercel will handle the rest!
