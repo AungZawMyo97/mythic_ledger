@@ -1,26 +1,17 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { auth } from "@/auth";
 
-export async function middleware(req: NextRequest) {
+export default auth((req) => {
   const pathname = req.nextUrl.pathname;
 
   if (pathname.startsWith("/api/auth")) {
     return NextResponse.next();
   }
 
-  const secret = process.env.AUTH_SECRET;
-  if (!secret) {
-    return NextResponse.json(
-      { error: "AUTH_SECRET is not configured" },
-      { status: 500 },
-    );
-  }
-
-  const token = await getToken({
-    req,
-    secret,
-  });
+  const token = req.auth?.user as {
+    role?: string;
+    mustChangePassword?: boolean;
+  } | undefined;
 
   if (pathname === "/login") {
     if (token) {
@@ -35,7 +26,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  const mustChange = Boolean(token.mustChangePassword);
+  const mustChange = Boolean(token?.mustChangePassword);
   if (mustChange && pathname !== "/change-password") {
     return NextResponse.redirect(new URL("/change-password", req.url));
   }
@@ -44,12 +35,12 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (pathname.startsWith("/admin") && token.role !== "SUPER_ADMIN") {
+  if (pathname.startsWith("/admin") && token?.role !== "SUPER_ADMIN") {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
   return NextResponse.next();
-}
+});
 
 export const config = {
   matcher: [
