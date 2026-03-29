@@ -1,0 +1,67 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  SHOP_ADMIN
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  email              String   @unique
+  passwordHash       String
+  role               UserRole
+  mustChangePassword Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  customers Customer[]
+}
+
+model Customer {
+  id              String   @id @default(cuid())
+  ingameId        String
+  zoneId          String
+  shopAdminUserId String
+  shopAdmin       User     @relation(fields: [shopAdminUserId], references: [id], onDelete: Cascade)
+  orders          Order[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([shopAdminUserId])
+  @@index([ingameId, zoneId])
+}
+
+model OrderType {
+  id        String   @id @default(cuid())
+  type      String
+  isActive  Boolean  @default(true)
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id           String    @id @default(cuid())
+  customerId   String
+  customer     Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orderTypeId  String
+  orderType    OrderType @relation(fields: [orderTypeId], references: [id])
+  orderDate    DateTime  @default(now())
+  buyingPrice  Decimal   @db.Decimal(14, 2)
+  sellingPrice Decimal   @db.Decimal(14, 2)
+  netProfit    Decimal   @db.Decimal(14, 2)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([customerId])
+  @@index([orderTypeId])
+  @@index([orderDate])
+}
