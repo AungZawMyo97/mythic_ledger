@@ -1,6 +1,5 @@
 import "dotenv/config";
 import { hash } from "bcryptjs";
-import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "../src/generated/prisma/client";
 
 async function main() {
@@ -17,8 +16,7 @@ async function main() {
     return;
   }
 
-  const adapter = new PrismaNeon({ connectionString: url });
-  const prisma = new PrismaClient({ adapter });
+  const prisma = new PrismaClient({ accelerateUrl: url } as any);
 
   const passwordHash = await hash(password, 12);
 
