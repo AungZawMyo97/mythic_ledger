@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { auth } from "@/auth";
 import {
   createCustomer,
   deleteCustomer,
@@ -7,7 +6,6 @@ import {
   listCustomersPaginated,
   updateCustomer,
 } from "@/actions/customers";
-import { listShopAdminsForSelect } from "@/actions/shop-admins";
 import { Button } from "@/components/ui/button";
 import { TablePagination } from "@/components/table-pagination";
 import { buttonVariants } from "@/lib/button-variants";
@@ -30,17 +28,12 @@ export default async function CustomersPage({
 }: {
   searchParams: Promise<{ edit?: string; page?: string }>;
 }) {
-  const session = await auth();
-  if (!session?.user) return null;
-
   const sp = await searchParams;
   const editId = sp.edit;
   const page = parsePage(sp.page);
-  const isSuper = session.user.role === "SUPER_ADMIN";
 
-  const [table, shopAdmins, editing] = await Promise.all([
+  const [table, editing] = await Promise.all([
     listCustomersPaginated(page, DEFAULT_PAGE_SIZE),
-    isSuper ? listShopAdminsForSelect() : Promise.resolve([]),
     editId ? getCustomerById(editId) : Promise.resolve(null),
   ]);
 
@@ -51,17 +44,8 @@ export default async function CustomersPage({
       <div>
         <h1 className="font-heading text-2xl md:text-3xl tracking-tight">Customers</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Player IDs and zones you deliver to.
+          Player IDs and zones for your shop.
         </p>
-        {isSuper && shopAdmins.length === 0 && (
-          <p className="mt-3 text-sm border border-border rounded-md p-3 bg-muted/50 text-foreground">
-            Create at least one shop admin under{" "}
-            <Link href="/admin/shop-admins" className="underline font-medium">
-              Shop admins
-            </Link>{" "}
-            before adding customers.
-          </p>
-        )}
       </div>
 
       <Card className="border-2 shadow-[4px_4px_0_0_var(--border)]">
@@ -97,24 +81,6 @@ export default async function CustomersPage({
                   className="bg-background"
                 />
               </div>
-              {isSuper && shopAdmins.length > 0 && (
-                <div className="space-y-2 sm:col-span-2 max-w-md">
-                  <Label htmlFor="shopAdminUserId">Shop admin</Label>
-                  <select
-                    id="shopAdminUserId"
-                    name="shopAdminUserId"
-                    defaultValue={editing.shopAdminUserId}
-                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs"
-                    required
-                  >
-                    {shopAdmins.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.email}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
               <div className="flex gap-2 sm:col-span-2">
                 <Button type="submit">Save</Button>
                 <Link
@@ -144,24 +110,6 @@ export default async function CustomersPage({
                 <Label htmlFor="zoneId">Zone ID</Label>
                 <Input id="zoneId" name="zoneId" required className="bg-background" />
               </div>
-              {isSuper && shopAdmins.length > 0 && (
-                <div className="space-y-2 sm:col-span-2 max-w-md">
-                  <Label htmlFor="shopAdminUserId">Assign to shop admin</Label>
-                  <select
-                    id="shopAdminUserId"
-                    name="shopAdminUserId"
-                    className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs"
-                    required
-                  >
-                    <option value="">Select…</option>
-                    {shopAdmins.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.email}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
               <div className="sm:col-span-2">
                 <Button type="submit">Add customer</Button>
               </div>
@@ -180,14 +128,13 @@ export default async function CustomersPage({
               <TableRow>
                 <TableHead>Ingame ID</TableHead>
                 <TableHead>Zone ID</TableHead>
-                {isSuper && <TableHead>Shop admin</TableHead>}
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {customers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={isSuper ? 4 : 3} className="text-muted-foreground">
+                  <TableCell colSpan={3} className="text-muted-foreground">
                     No customers yet.
                   </TableCell>
                 </TableRow>
@@ -196,12 +143,6 @@ export default async function CustomersPage({
                   <TableRow key={c.id}>
                     <TableCell className="font-medium">{c.ingameId}</TableCell>
                     <TableCell>{c.zoneId}</TableCell>
-                    {isSuper && (
-                      <TableCell className="text-muted-foreground text-sm">
-                        {(c as { shopAdmin?: { email: string } }).shopAdmin?.email ??
-                          "—"}
-                      </TableCell>
-                    )}
                     <TableCell className="text-right space-x-2">
                       <Link
                         href={`/customers?edit=${c.id}&page=${table.page}`}
@@ -209,10 +150,7 @@ export default async function CustomersPage({
                       >
                         Edit
                       </Link>
-                      <form
-                        action={deleteCustomer.bind(null, c.id)}
-                        className="inline"
-                      >
+                      <form action={deleteCustomer.bind(null, c.id)} className="inline">
                         <Button size="sm" variant="destructive" type="submit">
                           Delete
                         </Button>

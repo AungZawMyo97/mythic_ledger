@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { hash } from "bcryptjs";
-import { PrismaClient } from "../src/generated/prisma/client";
+import { PrismaClient } from "../src/generated/prisma";
+import { PrismaPg } from "@prisma/adapter-pg";
 
 async function main() {
   const url = process.env.DATABASE_URL;
@@ -16,7 +17,8 @@ async function main() {
     return;
   }
 
-  const prisma = new PrismaClient({ accelerateUrl: url } as any);
+  const adapter = new PrismaPg({ connectionString: url });
+  const prisma = new PrismaClient({ adapter });
 
   const passwordHash = await hash(password, 12);
 

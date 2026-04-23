@@ -24,22 +24,22 @@ import {
 } from "lucide-react";
 
 const nav = [
-  { href: "/", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/orders", label: "Orders", icon: Package },
   { href: "/reports/monthly", label: "Monthly profit", icon: CalendarRange },
+  { href: "/order-types", label: "Order types", icon: Settings2 },
 ];
 
 export async function AppShell({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  const role = session?.user?.role;
   const email = session?.user?.email ?? "";
 
   return (
     <div className="paper-bg min-h-screen flex items-start">
       <aside className="hidden md:flex md:sticky md:top-0 md:h-screen md:w-56 shrink-0 flex-col border-r border-border bg-card/80 backdrop-blur-sm overflow-y-auto">
         <div className="p-5 border-b border-border">
-          <Link href="/" className="flex items-center gap-2 font-heading text-lg tracking-tight">
+          <Link href="/dashboard" className="flex items-center gap-2 font-heading text-lg tracking-tight">
             <BookOpen className="size-5 text-primary" aria-hidden />
             <span>Mythic Ledger</span>
           </Link>
@@ -60,31 +60,13 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
               {item.label}
             </Link>
           ))}
-          {role === "SUPER_ADMIN" && (
-            <>
-              <Link
-                href="/order-types"
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              >
-                <Settings2 className="size-4 shrink-0" />
-                Order types
-              </Link>
-              <Link
-                href="/admin/shop-admins"
-                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-              >
-                <Users className="size-4 shrink-0" />
-                Shop admins
-              </Link>
-            </>
-          )}
         </nav>
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-14 border-b border-border bg-card/60 backdrop-blur-sm flex items-center justify-between px-4 md:px-8 gap-3">
           <div className="flex items-center gap-2 md:hidden">
-            <MobileNav isSuperAdmin={role === "SUPER_ADMIN"} />
+            <MobileNav />
             <span className="font-heading text-sm font-semibold">Mythic Ledger</span>
           </div>
           <div className="ml-auto">
@@ -100,7 +82,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuGroup>
                   <DropdownMenuLabel className="font-normal text-xs text-muted-foreground">
-                    {role === "SUPER_ADMIN" ? "Super Admin" : "Shop Admin"}
+                    Admin
                   </DropdownMenuLabel>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

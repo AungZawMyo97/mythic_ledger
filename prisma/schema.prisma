@@ -14,6 +14,18 @@ enum UserRole {
   SHOP_ADMIN
 }
 
+enum PublicPaymentMethod {
+  KPAY
+  AYA_PAY
+  WAVE_PAY
+}
+
+enum PublicOrderStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+}
+
 model User {
   id                 String   @id @default(cuid())
   email              String   @unique
@@ -41,12 +53,15 @@ model Customer {
 }
 
 model OrderType {
-  id        String   @id @default(cuid())
-  type      String
-  isActive  Boolean  @default(true)
-  orders    Order[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  type         String
+  buyingPrice  Decimal  @default(0) @db.Decimal(14, 2)
+  sellingPrice Decimal  @default(0) @db.Decimal(14, 2)
+  isActive     Boolean  @default(true)
+  orders       Order[]
+  publicOrders PublicOrder[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Order {
@@ -65,4 +80,22 @@ model Order {
   @@index([customerId])
   @@index([orderTypeId])
   @@index([orderDate])
+}
+
+model PublicOrder {
+  id                    String              @id @default(cuid())
+  orderTypeId           String
+  orderType             OrderType           @relation(fields: [orderTypeId], references: [id])
+  ingameId              String
+  zoneId                String
+  paymentMethod         PublicPaymentMethod
+  paymentNumberSnapshot String
+  transactionId         String
+  status                PublicOrderStatus   @default(PENDING)
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@index([orderTypeId])
+  @@index([createdAt])
+  @@index([paymentMethod])
 }

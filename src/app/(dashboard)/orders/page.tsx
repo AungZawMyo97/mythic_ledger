@@ -58,14 +58,13 @@ export default async function OrdersPage({
       <div>
         <h1 className="font-heading text-2xl md:text-3xl tracking-tight">Orders</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Record buying price, selling price, and net profit per order. Set{" "}
-          <strong>Order date</strong> when catching up on older sales.
+          Buying and selling prices are auto-filled from the selected package.
         </p>
       </div>
 
       {types.length === 0 && (
         <p className="text-sm text-amber-800 dark:text-amber-200 border border-border rounded-md p-3 bg-muted/50">
-          No active order types yet. Ask a Super Admin to add order types before creating orders.
+          No active order types yet. Add package types with prices first.
         </p>
       )}
 
@@ -111,7 +110,7 @@ export default async function OrdersPage({
                 >
                   {customers.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.ingameId} · zone {c.zoneId}
+                      {c.ingameId} - zone {c.zoneId}
                     </option>
                   ))}
                 </select>
@@ -125,7 +124,7 @@ export default async function OrdersPage({
                   required
                   className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs"
                 >
-                  <option value="">Select…</option>
+                  <option value="">Select...</option>
                   {!types.some((t) => t.id === editing.orderTypeId) && (
                     <option value={editing.orderTypeId}>
                       {editing.orderType.type} (Inactive)
@@ -133,32 +132,10 @@ export default async function OrdersPage({
                   )}
                   {types.map((t) => (
                     <option key={t.id} value={t.id}>
-                      {t.type}
+                      {t.type} (Buy {money(t.buyingPrice)} / Sell {money(t.sellingPrice)})
                     </option>
                   ))}
                 </select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="buyingPrice">Buying price</Label>
-                <Input
-                  id="buyingPrice"
-                  name="buyingPrice"
-                  defaultValue={money(editing.buyingPrice)}
-                  required
-                  inputMode="decimal"
-                  className="bg-background"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="sellingPrice">Selling price</Label>
-                <Input
-                  id="sellingPrice"
-                  name="sellingPrice"
-                  defaultValue={money(editing.sellingPrice)}
-                  required
-                  inputMode="decimal"
-                  className="bg-background"
-                />
               </div>
               <div className="flex gap-2 sm:col-span-2">
                 <Button type="submit">Save</Button>
@@ -194,10 +171,10 @@ export default async function OrdersPage({
                   required
                   className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs"
                 >
-                  <option value="">Select…</option>
+                  <option value="">Select...</option>
                   {customers.map((c) => (
                     <option key={c.id} value={c.id}>
-                      {c.ingameId} · zone {c.zoneId}
+                      {c.ingameId} - zone {c.zoneId}
                     </option>
                   ))}
                 </select>
@@ -211,35 +188,13 @@ export default async function OrdersPage({
                   disabled={types.length === 0}
                   className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs"
                 >
-                  <option value="">Select…</option>
+                  <option value="">Select...</option>
                   {types.map((t) => (
                     <option key={t.id} value={t.id}>
-                      {t.type}
+                      {t.type} (Buy {money(t.buyingPrice)} / Sell {money(t.sellingPrice)})
                     </option>
                   ))}
                 </select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="buyingPrice">Buying price</Label>
-                <Input
-                  id="buyingPrice"
-                  name="buyingPrice"
-                  required
-                  inputMode="decimal"
-                  placeholder="0.00"
-                  className="bg-background"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="sellingPrice">Selling price</Label>
-                <Input
-                  id="sellingPrice"
-                  name="sellingPrice"
-                  required
-                  inputMode="decimal"
-                  placeholder="0.00"
-                  className="bg-background"
-                />
               </div>
               <div className="sm:col-span-2">
                 <Button type="submit" disabled={types.length === 0}>

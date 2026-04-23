@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { compare, hash } from "bcryptjs";
 
 export async function signOutAction() {
-  await signOut({ redirectTo: "/login" });
+  await signOut({ redirectTo: "/" });
 }
 
 export async function changePassword(formData: FormData) {

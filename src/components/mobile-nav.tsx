@@ -21,21 +21,14 @@ import {
 } from "lucide-react";
 
 const base = [
-  { href: "/", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/orders", label: "Orders", icon: Package },
   { href: "/reports/monthly", label: "Monthly profit", icon: CalendarRange },
+  { href: "/order-types", label: "Order types", icon: Settings2 },
 ];
 
-export function MobileNav({ isSuperAdmin }: { isSuperAdmin: boolean }) {
-  const links = isSuperAdmin
-    ? [
-        ...base,
-        { href: "/order-types", label: "Order types", icon: Settings2 },
-        { href: "/admin/shop-admins", label: "Shop admins", icon: Users },
-      ]
-    : base;
-
+export function MobileNav() {
   return (
     <Sheet>
       <SheetTrigger
@@ -55,7 +48,7 @@ export function MobileNav({ isSuperAdmin }: { isSuperAdmin: boolean }) {
           </SheetTitle>
         </SheetHeader>
         <nav className="mt-8 flex flex-col gap-1">
-          {links.map((item) => (
+          {base.map((item) => (
             <Link
               key={item.href}
               href={item.href}

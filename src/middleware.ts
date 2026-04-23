@@ -18,8 +18,12 @@ export default auth((req) => {
 
   if (pathname === "/login") {
     if (token) {
-      return NextResponse.redirect(new URL("/", req.url));
+      return NextResponse.redirect(new URL("/dashboard", req.url));
     }
+    return NextResponse.next();
+  }
+
+  if (pathname === "/" || pathname === "/order" || pathname === "/order/") {
     return NextResponse.next();
   }
 
@@ -35,11 +39,7 @@ export default auth((req) => {
   }
 
   if (!mustChange && pathname === "/change-password") {
-    return NextResponse.redirect(new URL("/", req.url));
-  }
-
-  if (pathname.startsWith("/admin") && token?.role !== "SUPER_ADMIN") {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();

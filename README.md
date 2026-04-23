@@ -11,11 +11,10 @@ It provides seamless tracking of customers, order histories, and profit margins,
 
 ## 🌟 Key Features
 
-- **Role-Based Access Control (RBAC):**
-  - **Super Admins:** Manage the entire system, create shop administrators, and view global order activity.
-  - **Shop Admins:** Restricted to managing their own customers and processing their own orders. Secure, isolated instances.
+- **Single Admin Model:** One shop admin account manages all dashboard settings, customers, orders, and reports.
 - **Customer Management:** Keep track of player In-Game IDs and Zone IDs seamlessly.
 - **Order Tracking:** Create granular records of buying price, selling price, and automatically calculate net profit for every diamond recharge.
+- **Public Order Form:** Let customers place orders directly from `/order`, select package + payment method, and submit transaction IDs.
 - **Financial Reporting:** View automated monthly revenue and net profit aggregated reports natively inside your dashboard.
 - **Beautiful Modern UI:** Built with standard shadcn/ui components, dynamic React loading skeletons, smooth animations, and comprehensive dark mode support.
 - **Security:** Fully hashed passwords with bcrypt and secure session handling using Auth.js. Enforced password resets for newly created admins.
@@ -57,6 +56,9 @@ It provides seamless tracking of customers, order histories, and profit margins,
    SEED_SUPER_ADMIN_EMAIL="admin@example.com"
    SEED_SUPER_ADMIN_PASSWORD="SecurePassword123!"
    DEFAULT_SHOP_ADMIN_PASSWORD="TempPassword123!"
+   KPAY_NUMBER="09xxxxxxxxx"
+   AYA_PAY_NUMBER="09xxxxxxxxx"
+   WAVE_PAY_NUMBER="09xxxxxxxxx"
    ```
 
 4. Push the Database Schema
@@ -74,7 +76,8 @@ It provides seamless tracking of customers, order histories, and profit margins,
    npm run dev
    ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result and log in using the credentials you defined in your `.env` file.
+Open [http://localhost:3000](http://localhost:3000) with your browser to use the public order page.  
+Admin dashboard is available after login at [http://localhost:3000/dashboard](http://localhost:3000/dashboard).
 
 ## 📦 Deployment (Vercel)
 

@@ -20,7 +20,7 @@ export default function LoginPage() {
         <Card className="border-2 shadow-[6px_6px_0_0_var(--border)]">
           <CardHeader>
             <CardTitle className="font-heading text-xl">Welcome back</CardTitle>
-            <CardDescription>Use your shop or super admin credentials.</CardDescription>
+            <CardDescription>Sign in as the shop admin to manage your store.</CardDescription>
           </CardHeader>
           <CardContent>
             <Suspense fallback={<p className="text-sm text-muted-foreground">Loading…</p>}>

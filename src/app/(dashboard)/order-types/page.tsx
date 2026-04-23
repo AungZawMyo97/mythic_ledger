@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { auth } from "@/auth";
 import {
   createOrderType,
   deleteOrderType,
@@ -23,19 +22,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { redirect } from "next/navigation";
 
 export default async function OrderTypesPage({
   searchParams,
 }: {
   searchParams: Promise<{ edit?: string; page?: string }>;
 }) {
-  const session = await auth();
-  if (!session?.user) return null;
-  if (session.user.role !== "SUPER_ADMIN") {
-    redirect("/");
-  }
-
   const sp = await searchParams;
   const editId = sp.edit;
   const page = parsePage(sp.page);
@@ -46,13 +38,14 @@ export default async function OrderTypesPage({
   ]);
 
   const types = table.items;
+  const money = (n: { toString: () => string }) => n.toString();
 
   return (
     <div className="space-y-8">
       <div>
         <h1 className="font-heading text-2xl md:text-3xl tracking-tight">Order types</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Labels for diamond packs or bundles (e.g. &quot;86 + 8&quot;, &quot;Weekly pass&quot;).
+          Set package label, your buying price, and customer selling price.
         </p>
       </div>
 
@@ -75,6 +68,28 @@ export default async function OrderTypesPage({
                   name="type"
                   defaultValue={editing.type}
                   required
+                  className="bg-background"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="buyingPrice">Buying price</Label>
+                <Input
+                  id="buyingPrice"
+                  name="buyingPrice"
+                  defaultValue={money(editing.buyingPrice)}
+                  required
+                  inputMode="decimal"
+                  className="bg-background"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="sellingPrice">Selling price</Label>
+                <Input
+                  id="sellingPrice"
+                  name="sellingPrice"
+                  defaultValue={money(editing.sellingPrice)}
+                  required
+                  inputMode="decimal"
                   className="bg-background"
                 />
               </div>
@@ -107,6 +122,28 @@ export default async function OrderTypesPage({
                 <Input id="type" name="type" required className="bg-background" />
               </div>
               <div className="space-y-2">
+                <Label htmlFor="buyingPrice">Buying price</Label>
+                <Input
+                  id="buyingPrice"
+                  name="buyingPrice"
+                  required
+                  inputMode="decimal"
+                  placeholder="0.00"
+                  className="bg-background"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="sellingPrice">Selling price</Label>
+                <Input
+                  id="sellingPrice"
+                  name="sellingPrice"
+                  required
+                  inputMode="decimal"
+                  placeholder="0.00"
+                  className="bg-background"
+                />
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="isActive">Status</Label>
                 <select
                   id="isActive"
@@ -133,6 +170,8 @@ export default async function OrderTypesPage({
             <TableHeader>
               <TableRow>
                 <TableHead>Label</TableHead>
+                <TableHead className="text-right">Buying</TableHead>
+                <TableHead className="text-right">Selling</TableHead>
                 <TableHead>Active</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -140,7 +179,7 @@ export default async function OrderTypesPage({
             <TableBody>
               {types.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={3} className="text-muted-foreground">
+                  <TableCell colSpan={5} className="text-muted-foreground">
                     No order types yet.
                   </TableCell>
                 </TableRow>
@@ -148,6 +187,12 @@ export default async function OrderTypesPage({
                 types.map((t) => (
                   <TableRow key={t.id}>
                     <TableCell className="font-medium">{t.type}</TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {money(t.buyingPrice)}
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {money(t.sellingPrice)}
+                    </TableCell>
                     <TableCell>{t.isActive ? "Yes" : "No"}</TableCell>
                     <TableCell className="text-right space-x-2">
                       <Link

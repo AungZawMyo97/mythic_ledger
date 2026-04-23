@@ -7,15 +7,8 @@ export async function getDashboardStats() {
   const session = await auth();
   if (!session?.user) throw new Error("Unauthorized");
 
-  const isSuper = session.user.role === "SUPER_ADMIN";
-
-  const customerWhere = isSuper
-    ? undefined
-    : { shopAdminUserId: session.user.id };
-
-  const orderWhere = isSuper
-    ? undefined
-    : { customer: { shopAdminUserId: session.user.id } };
+  const customerWhere = { shopAdminUserId: session.user.id };
+  const orderWhere = { customer: { shopAdminUserId: session.user.id } };
 
   const [customerCount, orderCount, profitAgg] = await Promise.all([
     prisma.customer.count({ where: customerWhere }),
