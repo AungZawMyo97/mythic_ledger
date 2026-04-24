@@ -2,6 +2,7 @@
 
 import { createPublicOrder } from "@/actions/public-orders";
 import {
+  type PublicPaymentAccountInfo,
   PUBLIC_PAYMENT_LABELS,
   PUBLIC_PAYMENT_METHODS,
   type PublicPaymentMethod,
@@ -12,15 +13,15 @@ import { Label } from "@/components/ui/label";
 import { useRef, useState } from "react";
 
 type PublicOrderFormProps = {
-  packages: Array<{ id: string; type: string; sellingPrice: { toString(): string } }>;
-  paymentNumbers: Record<PublicPaymentMethod, string>;
+  packages: Array<{ id: string; type: string; sellingPrice: string }>;
+  paymentAccounts: Record<PublicPaymentMethod, PublicPaymentAccountInfo>;
 };
 
-export function PublicOrderForm({ packages, paymentNumbers }: PublicOrderFormProps) {
+export function PublicOrderForm({ packages, paymentAccounts }: PublicOrderFormProps) {
   const [paymentMethod, setPaymentMethod] = useState<PublicPaymentMethod>("KPAY");
   const txIdRef = useRef<HTMLInputElement>(null);
 
-  const selectedNumber = paymentNumbers[paymentMethod];
+  const selectedAccount = paymentAccounts[paymentMethod];
 
   return (
     <form
@@ -51,7 +52,7 @@ export function PublicOrderForm({ packages, paymentNumbers }: PublicOrderFormPro
           <option value="">Select package...</option>
           {packages.map((pkg) => (
             <option key={pkg.id} value={pkg.id}>
-              {pkg.type} - {pkg.sellingPrice.toString()}
+              {pkg.type} - {pkg.sellingPrice}
             </option>
           ))}
         </select>
@@ -86,8 +87,15 @@ export function PublicOrderForm({ packages, paymentNumbers }: PublicOrderFormPro
       </div>
 
       <div className="rounded-md border border-border bg-muted/40 p-3 text-sm md:col-span-2">
-        <p className="font-medium">{PUBLIC_PAYMENT_LABELS[paymentMethod]} number</p>
-        <p className="mt-1 text-muted-foreground">{selectedNumber || "Not configured yet"}</p>
+        <p className="font-medium">{PUBLIC_PAYMENT_LABELS[paymentMethod]} account</p>
+        {selectedAccount.name && selectedAccount.number ? (
+          <div className="mt-1 space-y-1 text-muted-foreground">
+            <p>Name: {selectedAccount.name}</p>
+            <p>Number: {selectedAccount.number}</p>
+          </div>
+        ) : (
+          <p className="mt-1 text-muted-foreground">Not configured yet</p>
+        )}
       </div>
 
       <input ref={txIdRef} type="hidden" name="transactionId" />

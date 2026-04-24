@@ -64,6 +64,15 @@ model OrderType {
   updatedAt    DateTime @updatedAt
 }
 
+model PublicPaymentAccount {
+  id            String              @id @default(cuid())
+  method        PublicPaymentMethod @unique
+  accountName   String
+  accountNumber String
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+}
+
 model Order {
   id           String    @id @default(cuid())
   customerId   String
@@ -89,6 +98,7 @@ model PublicOrder {
   ingameId              String
   zoneId                String
   paymentMethod         PublicPaymentMethod
+  paymentAccountNameSnapshot String
   paymentNumberSnapshot String
   transactionId         String
   status                PublicOrderStatus   @default(PENDING)

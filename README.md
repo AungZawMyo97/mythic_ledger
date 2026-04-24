@@ -55,10 +55,6 @@ It provides seamless tracking of customers, order histories, and profit margins,
    AUTH_SECRET="generate-a-random-32-char-string-here"
    SEED_SUPER_ADMIN_EMAIL="admin@example.com"
    SEED_SUPER_ADMIN_PASSWORD="SecurePassword123!"
-   DEFAULT_SHOP_ADMIN_PASSWORD="TempPassword123!"
-   KPAY_NUMBER="09xxxxxxxxx"
-   AYA_PAY_NUMBER="09xxxxxxxxx"
-   WAVE_PAY_NUMBER="09xxxxxxxxx"
    ```
 
 4. Push the Database Schema

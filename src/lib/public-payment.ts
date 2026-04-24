@@ -12,10 +12,14 @@ export const PUBLIC_PAYMENT_LABELS: Record<PublicPaymentMethod, string> = {
   WAVE_PAY: "Wave Pay",
 };
 
-export function getPublicPaymentNumbers() {
-  return {
-    KPAY: process.env.KPAY_NUMBER?.trim() ?? "",
-    AYA_PAY: process.env.AYA_PAY_NUMBER?.trim() ?? "",
-    WAVE_PAY: process.env.WAVE_PAY_NUMBER?.trim() ?? "",
-  } satisfies Record<PublicPaymentMethod, string>;
-}
+export type PublicPaymentAccountInfo = {
+  name: string;
+  number: string;
+};
+
+export const EMPTY_PUBLIC_PAYMENT_ACCOUNTS: Record<PublicPaymentMethod, PublicPaymentAccountInfo> =
+  {
+    KPAY: { name: "", number: "" },
+    AYA_PAY: { name: "", number: "" },
+    WAVE_PAY: { name: "", number: "" },
+  };

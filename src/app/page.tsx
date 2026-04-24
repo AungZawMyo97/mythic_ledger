@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { listPublicOrderPackages } from "@/actions/public-orders";
+import { listPublicOrderPackages, listPublicPaymentAccounts } from "@/actions/public-orders";
 import { PublicOrderForm } from "@/components/public-order-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/lib/button-variants";
-import { getPublicPaymentNumbers } from "@/lib/public-payment";
 import { cn } from "@/lib/utils";
 
 const errorMessages: Record<string, string> = {
@@ -18,8 +17,11 @@ export default async function PublicOrderHomePage({
 }: {
   searchParams: Promise<{ success?: string; error?: string }>;
 }) {
-  const [sp, packages] = await Promise.all([searchParams, listPublicOrderPackages()]);
-  const paymentNumbers = getPublicPaymentNumbers();
+  const [sp, packages, paymentAccounts] = await Promise.all([
+    searchParams,
+    listPublicOrderPackages(),
+    listPublicPaymentAccounts(),
+  ]);
   const error = sp.error ? errorMessages[sp.error] : null;
   const showSuccess = sp.success === "1";
 
@@ -64,7 +66,7 @@ export default async function PublicOrderHomePage({
                 No active packages are available right now.
               </p>
             ) : (
-              <PublicOrderForm packages={packages} paymentNumbers={paymentNumbers} />
+              <PublicOrderForm packages={packages} paymentAccounts={paymentAccounts} />
             )}
           </CardContent>
         </Card>
