@@ -2,10 +2,21 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@/generated/prisma";
 import { parseOrderDateFromForm } from "@/lib/datetime-input";
 import { DEFAULT_PAGE_SIZE, getPaginationMeta } from "@/lib/pagination";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+
+function parseMoney(value: FormDataEntryValue | null): Prisma.Decimal | null {
+  const t = String(value ?? "").trim();
+  if (!t) return null;
+  try {
+    return new Prisma.Decimal(t);
+  } catch {
+    return null;
+  }
+}
 
 async function assertCustomerAccess(customerId: string, userId: string) {
   const customer = await prisma.customer.findUnique({
@@ -98,15 +109,18 @@ export async function createOrder(formData: FormData) {
     redirect("/orders?error=type");
   }
 
-  const netProfit = prices.sellingPrice.minus(prices.buyingPrice);
+  // Allow manual override; fall back to OrderType defaults
+  const buyingPrice = parseMoney(formData.get("buyingPrice")) ?? prices.buyingPrice;
+  const sellingPrice = parseMoney(formData.get("sellingPrice")) ?? prices.sellingPrice;
+  const netProfit = sellingPrice.minus(buyingPrice);
 
   await prisma.order.create({
     data: {
       customerId,
       orderTypeId,
       orderDate,
-      buyingPrice: prices.buyingPrice,
-      sellingPrice: prices.sellingPrice,
+      buyingPrice,
+      sellingPrice,
       netProfit,
     },
   });
@@ -148,7 +162,10 @@ export async function updateOrder(id: string, formData: FormData) {
     redirect(`/orders?edit=${id}&error=type`);
   }
 
-  const netProfit = prices.sellingPrice.minus(prices.buyingPrice);
+  // Allow manual override; fall back to OrderType defaults
+  const buyingPrice = parseMoney(formData.get("buyingPrice")) ?? prices.buyingPrice;
+  const sellingPrice = parseMoney(formData.get("sellingPrice")) ?? prices.sellingPrice;
+  const netProfit = sellingPrice.minus(buyingPrice);
 
   await prisma.order.update({
     where: { id },
@@ -156,8 +173,8 @@ export async function updateOrder(id: string, formData: FormData) {
       customerId,
       orderTypeId,
       orderDate,
-      buyingPrice: prices.buyingPrice,
-      sellingPrice: prices.sellingPrice,
+      buyingPrice,
+      sellingPrice,
       netProfit,
     },
   });

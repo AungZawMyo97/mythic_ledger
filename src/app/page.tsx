@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { listPublicOrderPackages, listPublicPaymentAccounts } from "@/actions/public-orders";
+import {
+  listPublicOrderPackages,
+  listPublicPaymentAccounts,
+} from "@/actions/public-orders";
 import { PublicOrderForm } from "@/components/public-order-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/lib/button-variants";
@@ -26,19 +29,24 @@ export default async function PublicOrderHomePage({
   const showSuccess = sp.success === "1";
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-background to-muted/40 px-4 py-10">
+    <main className="min-h-screen bg-linear-to-b from-background to-muted/40 px-4 py-10">
       <div className="mx-auto max-w-2xl space-y-4">
         <div className="flex items-center justify-between gap-3">
           <div className="space-y-2">
-            <h1 className="font-heading text-3xl tracking-tight">MLBB Diamond Order</h1>
+            <h1 className="font-heading text-3xl tracking-tight">
+              MLBB Diamond Order
+            </h1>
             <p className="text-sm text-muted-foreground">
-              Select package, enter your game ID and zone, choose payment, and submit your
-              transaction ID.
+              Select package, enter your game ID and zone, choose payment, and
+              submit your transaction ID.
             </p>
           </div>
           <Link
             href="/login"
-            className={cn(buttonVariants({ variant: "outline", size: "sm" }), "shrink-0")}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "shrink-0",
+            )}
           >
             Admin login
           </Link>
@@ -58,7 +66,9 @@ export default async function PublicOrderHomePage({
 
         <Card className="border-2 shadow-[4px_4px_0_0_var(--border)]">
           <CardHeader>
-            <CardTitle className="font-heading text-xl">Place your order</CardTitle>
+            <CardTitle className="font-heading text-xl">
+              Place your order
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {packages.length === 0 ? (
@@ -66,7 +76,10 @@ export default async function PublicOrderHomePage({
                 No active packages are available right now.
               </p>
             ) : (
-              <PublicOrderForm packages={packages} paymentAccounts={paymentAccounts} />
+              <PublicOrderForm
+                packages={packages}
+                paymentAccounts={paymentAccounts}
+              />
             )}
           </CardContent>
         </Card>

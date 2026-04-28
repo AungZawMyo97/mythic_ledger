@@ -58,7 +58,7 @@ export default async function OrdersPage({
       <div>
         <h1 className="font-heading text-2xl md:text-3xl tracking-tight">Orders</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Buying and selling prices are auto-filled from the selected package.
+          Prices default from the selected package but can be overridden per order.
         </p>
       </div>
 
@@ -137,6 +137,32 @@ export default async function OrdersPage({
                   ))}
                 </select>
               </div>
+              <div className="space-y-2 max-w-md">
+                <Label htmlFor="buyingPrice">Buying price</Label>
+                <Input
+                  id="buyingPrice"
+                  name="buyingPrice"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  defaultValue={editing.buyingPrice.toString()}
+                  placeholder="Leave empty to use package default"
+                  className="bg-background"
+                />
+              </div>
+              <div className="space-y-2 max-w-md">
+                <Label htmlFor="sellingPrice">Selling price</Label>
+                <Input
+                  id="sellingPrice"
+                  name="sellingPrice"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  defaultValue={editing.sellingPrice.toString()}
+                  placeholder="Leave empty to use package default"
+                  className="bg-background"
+                />
+              </div>
               <div className="flex gap-2 sm:col-span-2">
                 <Button type="submit">Save</Button>
                 <Link
@@ -195,6 +221,36 @@ export default async function OrdersPage({
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className="space-y-2 max-w-md">
+                <Label htmlFor="newBuyingPrice">Buying price</Label>
+                <Input
+                  id="newBuyingPrice"
+                  name="buyingPrice"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="Leave empty to use package default"
+                  className="bg-background"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Override if this order had a different price than the current package.
+                </p>
+              </div>
+              <div className="space-y-2 max-w-md">
+                <Label htmlFor="newSellingPrice">Selling price</Label>
+                <Input
+                  id="newSellingPrice"
+                  name="sellingPrice"
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  placeholder="Leave empty to use package default"
+                  className="bg-background"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Override if this order had a different price than the current package.
+                </p>
               </div>
               <div className="sm:col-span-2">
                 <Button type="submit" disabled={types.length === 0}>
