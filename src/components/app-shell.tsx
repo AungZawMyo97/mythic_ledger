@@ -16,6 +16,7 @@ import { MobileNav } from "@/components/mobile-nav";
 import {
   BookOpen,
   CalendarRange,
+  CreditCard,
   LayoutDashboard,
   LogOut,
   Package,
@@ -29,6 +30,7 @@ const nav = [
   { href: "/orders", label: "Orders", icon: Package },
   { href: "/reports/monthly", label: "Monthly profit", icon: CalendarRange },
   { href: "/order-types", label: "Order types", icon: Settings2 },
+  { href: "/payment-accounts", label: "Payment accounts", icon: CreditCard },
 ];
 
 export async function AppShell({ children }: { children: React.ReactNode }) {
