@@ -17,6 +17,7 @@ import {
   BookOpen,
   CalendarRange,
   CreditCard,
+  Inbox,
   LayoutDashboard,
   LogOut,
   Package,
@@ -26,6 +27,7 @@ import {
 
 const nav = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/public-orders", label: "Public orders", icon: Inbox },
   { href: "/customers", label: "Customers", icon: Users },
   { href: "/orders", label: "Orders", icon: Package },
   { href: "/reports/monthly", label: "Monthly profit", icon: CalendarRange },
