@@ -36,6 +36,11 @@ export function PublicOrderForm({ packages, paymentAccounts }: PublicOrderFormPr
   const selectedAccount = paymentAccounts[paymentMethod];
 
   function handlePlaceOrder(event: React.FormEvent<HTMLFormElement>) {
+    // If the transaction ID is already set, let the form submit to the server action
+    if (txIdRef.current?.value) {
+      return;
+    }
+
     event.preventDefault();
     setTxIdValue("");
     setTxError("");
